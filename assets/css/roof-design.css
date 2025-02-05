@@ -1,0 +1,52 @@
+.rdt-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+.rdt-styles, .rdt-materials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+.rdt-card {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    width: 180px;
+    cursor: pointer;
+    transition: background 0.3s, border-color 0.3s;
+}
+.rdt-card img {
+    max-width: 100%;
+    height: auto;
+}
+.rdt-card.rdt-selected {
+    border-color: #0073aa;
+    background: #f1f1f1;
+}
+.rdt-summary {
+    margin-top: 20px;
+}
+.rdt-summary p {
+    font-size: 1.1em;
+}
+#rdt-submit-design {
+    padding: 10px 20px;
+    background: #0073aa;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+#rdt-submit-design:hover {
+    background: #005177;
+}
+.rdt-form-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+.rdt-design-summary {
+    background: #f9f9f9;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+}
