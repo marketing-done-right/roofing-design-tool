@@ -215,6 +215,30 @@ function rdt_display_design_form() {
 			}
 			?>
 		</div>
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+				var params = new URLSearchParams(window.location.search);
+				var styleKey = <?php echo json_encode( get_option( 'rdt_hidden_field_style', 'roof_style' ) ); ?>;
+				var materialKey = <?php echo json_encode( get_option( 'rdt_hidden_field_material', 'roof_material' ) ); ?>;
+				
+				if( params.has(styleKey) ) {
+					var styleValue = params.get(styleKey);
+					var styleField = document.querySelector('input[name="'+ styleKey +'"]');
+					if(styleField) {
+						styleField.value = styleValue;
+					}
+				}
+				
+				if( params.has(materialKey) ) {
+					var materialValue = params.get(materialKey);
+					var materialField = document.querySelector('input[name="'+ materialKey +'"]');
+					if(materialField) {
+						materialField.value = materialValue;
+					}
+				}
+			});
+		</script>
+
 	</div>
 	<?php
 	return ob_get_clean();

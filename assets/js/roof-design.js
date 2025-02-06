@@ -24,12 +24,21 @@ jQuery(document).ready(function($) {
             alert('Please select both a roof style and a roof material.');
             return;
         }
-        // Use the design form page URL passed from PHP (if set).
+        // Determine the proper separator for the query string.
+        // If the base URL already contains a "?" (i.e. existing query parameters),
+        // we use "&" to append additional parameters; otherwise, we start with "?".
         var baseUrl = rdt_vars.designFormUrl ? rdt_vars.designFormUrl : (window.location.origin + window.location.pathname);
-        // Append URL parameters using the keys from settings.
-        var redirectURL = baseUrl + '?';
-        redirectURL += encodeURIComponent(rdt_vars.hiddenStyleKey) + '=' + encodeURIComponent(selectedStyle) + '&';
-        redirectURL += encodeURIComponent(rdt_vars.hiddenMaterialKey) + '=' + encodeURIComponent(selectedMaterial);
+        // Construct the redirect URL by appending the hidden field parameters.
+        // We encode the keys and values to ensure they are safe for URLs.
+        // - rdt_vars.hiddenStyleKey: the query parameter key for the roof style.
+        // - selectedStyle: the value chosen by the user for the roof style.
+        // - rdt_vars.hiddenMaterialKey: the query parameter key for the roof material.
+        // - selectedMaterial: the value chosen by the user for the roof material.
+        var separator = baseUrl.indexOf('?') !== -1 ? '&' : '?';
+        var redirectURL = baseUrl + separator +
+            encodeURIComponent(rdt_vars.hiddenStyleKey) + '=' + encodeURIComponent(selectedStyle) + '&' +
+            encodeURIComponent(rdt_vars.hiddenMaterialKey) + '=' + encodeURIComponent(selectedMaterial);
+        // Redirect the browser to the constructed URL, which should pass the query parameters.
         window.location.href = redirectURL;
     });
 });
