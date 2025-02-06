@@ -24,9 +24,12 @@ jQuery(document).ready(function($) {
             alert('Please select both a roof style and a roof material.');
             return;
         }
-        // Redirect to the current page with URL parameters.
-        // (You can change this logic if you want to redirect to a dedicated contact page.)
-        var redirectURL = window.location.origin + window.location.pathname + '?style=' + encodeURIComponent(selectedStyle) + '&material=' + encodeURIComponent(selectedMaterial);
+        // Use the design form page URL passed from PHP (if set).
+        var baseUrl = rdt_vars.designFormUrl ? rdt_vars.designFormUrl : (window.location.origin + window.location.pathname);
+        // Append URL parameters using the keys from settings.
+        var redirectURL = baseUrl + '?';
+        redirectURL += encodeURIComponent(rdt_vars.hiddenStyleKey) + '=' + encodeURIComponent(selectedStyle) + '&';
+        redirectURL += encodeURIComponent(rdt_vars.hiddenMaterialKey) + '=' + encodeURIComponent(selectedMaterial);
         window.location.href = redirectURL;
     });
 });

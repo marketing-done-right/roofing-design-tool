@@ -8,7 +8,7 @@
  * License: GPL2
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
@@ -83,12 +83,25 @@ function rdt_register_post_types() {
 add_action( 'init', 'rdt_register_post_types' );
 
 /* ==========================================================================
-   2. Enqueue Front-end Scripts and Styles
+   2. Enqueue Front-end Scripts and Styles & Pass Settings to JS
    ========================================================================== */
 function rdt_enqueue_assets() {
 	if ( ! is_admin() ) {
 		wp_enqueue_style( 'rdt-style', RDT_PLUGIN_URL . 'assets/css/roof-design.css', array(), '1.0' );
-		wp_enqueue_script( 'rdt-script', RDT_PLUGIN_URL . 'assets/js/roof-design.js', array( 'jquery' ), '1.0', true );
+		wp_enqueue_script( 'rdt-script', RDT_PLUGIN_URL . 'assets/js/roof-design.js', array( 'jquery' ), '1.1', true );
+
+		// Get settings options.
+		$design_form_page_id = get_option( 'rdt_design_form_page', '' );
+		$design_form_url     = $design_form_page_id ? get_permalink( $design_form_page_id ) : '';
+		$hidden_field_style  = get_option( 'rdt_hidden_field_style', 'roof_style' );
+		$hidden_field_material = get_option( 'rdt_hidden_field_material', 'roof_material' );
+
+		// Pass settings to JavaScript.
+		wp_localize_script( 'rdt-script', 'rdt_vars', array(
+			'designFormUrl'     => esc_url( $design_form_url ),
+			'hiddenStyleKey'    => esc_attr( $hidden_field_style ),
+			'hiddenMaterialKey' => esc_attr( $hidden_field_material ),
+		) );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'rdt_enqueue_assets' );
@@ -177,9 +190,13 @@ add_shortcode( 'roof_design_tool', 'rdt_display_design_tool' );
 function rdt_display_design_form() {
 	ob_start();
 
-	// Get and sanitize URL parameters.
-	$selected_style    = isset( $_GET['style'] ) ? sanitize_text_field( wp_unslash( $_GET['style'] ) ) : '';
-	$selected_material = isset( $_GET['material'] ) ? sanitize_text_field( wp_unslash( $_GET['material'] ) ) : '';
+	// Get the hidden field names from settings.
+	$hidden_field_style   = get_option( 'rdt_hidden_field_style', 'roof_style' );
+	$hidden_field_material = get_option( 'rdt_hidden_field_material', 'roof_material' );
+
+	// Get and sanitize URL parameters using the keys defined in settings.
+	$selected_style    = isset( $_GET[ $hidden_field_style ] ) ? sanitize_text_field( wp_unslash( $_GET[ $hidden_field_style ] ) ) : '';
+	$selected_material = isset( $_GET[ $hidden_field_material ] ) ? sanitize_text_field( wp_unslash( $_GET[ $hidden_field_material ] ) ) : '';
 	?>
 	<div class="rdt-form-container">
 		<h2><?php esc_html_e( 'Your Roof Design Summary', 'roofing-design-tool' ); ?></h2>
@@ -205,7 +222,7 @@ function rdt_display_design_form() {
 add_shortcode( 'roof_design_form', 'rdt_display_design_form' );
 
 /* ==========================================================================
-   5. Plugin Settings Page (to set the form shortcode)
+   5. Plugin Settings Page – Form Shortcode, Design Form Page & Hidden Field Names
    ========================================================================== */
 function rdt_add_settings_page() {
 	add_options_page(
@@ -219,7 +236,6 @@ function rdt_add_settings_page() {
 add_action( 'admin_menu', 'rdt_add_settings_page' );
 
 function rdt_render_settings_page() {
-	// Check that the current user has permission.
 	if ( ! current_user_can( 'manage_options' ) ) {
 		return;
 	}
@@ -229,11 +245,32 @@ function rdt_render_settings_page() {
 		if ( isset( $_POST['rdt_form_shortcode'] ) ) {
 			$form_shortcode = sanitize_text_field( wp_unslash( $_POST['rdt_form_shortcode'] ) );
 			update_option( 'rdt_form_shortcode', $form_shortcode );
-			echo '<div class="updated"><p>' . esc_html__( 'Settings saved.', 'roofing-design-tool' ) . '</p></div>';
 		}
+		if ( isset( $_POST['rdt_design_form_page'] ) ) {
+			$design_form_page = absint( $_POST['rdt_design_form_page'] );
+			update_option( 'rdt_design_form_page', $design_form_page );
+		}
+		if ( isset( $_POST['rdt_hidden_field_style'] ) ) {
+			$hidden_field_style = sanitize_text_field( wp_unslash( $_POST['rdt_hidden_field_style'] ) );
+			update_option( 'rdt_hidden_field_style', $hidden_field_style );
+		}
+		if ( isset( $_POST['rdt_hidden_field_material'] ) ) {
+			$hidden_field_material = sanitize_text_field( wp_unslash( $_POST['rdt_hidden_field_material'] ) );
+			update_option( 'rdt_hidden_field_material', $hidden_field_material );
+		}
+		echo '<div class="updated"><p>' . esc_html__( 'Settings saved.', 'roofing-design-tool' ) . '</p></div>';
 	}
 
-	$current_shortcode = get_option( 'rdt_form_shortcode', '' );
+	$current_shortcode          = get_option( 'rdt_form_shortcode', '' );
+	$current_design_form_page   = get_option( 'rdt_design_form_page', '' );
+	$current_hidden_field_style = get_option( 'rdt_hidden_field_style', 'roof_style' );
+	$current_hidden_field_material = get_option( 'rdt_hidden_field_material', 'roof_material' );
+
+	// Get published pages for a dropdown.
+	$pages = get_pages( array(
+		'sort_order' => 'ASC',
+		'sort_column' => 'post_title',
+	) );
 	?>
 	<div class="wrap">
 		<h1><?php esc_html_e( 'Roof Design Tool Settings', 'roofing-design-tool' ); ?></h1>
@@ -247,6 +284,45 @@ function rdt_render_settings_page() {
 					<td>
 						<input name="rdt_form_shortcode" type="text" id="rdt_form_shortcode" value="<?php echo esc_attr( $current_shortcode ); ?>" class="regular-text">
 						<p class="description"><?php esc_html_e( 'Enter the form shortcode from Fluent Forms Pro (or any other form plugin).', 'roofing-design-tool' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">
+						<label for="rdt_design_form_page"><?php esc_html_e( 'Design Form Page', 'roofing-design-tool' ); ?></label>
+					</th>
+					<td>
+						<select name="rdt_design_form_page" id="rdt_design_form_page">
+							<option value=""><?php esc_html_e( '-- Select Page --', 'roofing-design-tool' ); ?></option>
+							<?php
+							foreach ( $pages as $page ) {
+								printf(
+									'<option value="%d" %s>%s</option>',
+									absint( $page->ID ),
+									selected( $current_design_form_page, $page->ID, false ),
+									esc_html( $page->post_title )
+								);
+							}
+							?>
+						</select>
+						<p class="description"><?php esc_html_e( 'Select the page that contains the [roof_design_form] shortcode.', 'roofing-design-tool' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">
+						<label for="rdt_hidden_field_style"><?php esc_html_e( 'Hidden Field Name for Roof Style', 'roofing-design-tool' ); ?></label>
+					</th>
+					<td>
+						<input name="rdt_hidden_field_style" type="text" id="rdt_hidden_field_style" value="<?php echo esc_attr( $current_hidden_field_style ); ?>" class="regular-text">
+						<p class="description"><?php esc_html_e( 'Enter the hidden field name that will be used for the roof style value (this must match your Fluent Forms hidden field).', 'roofing-design-tool' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">
+						<label for="rdt_hidden_field_material"><?php esc_html_e( 'Hidden Field Name for Roof Material', 'roofing-design-tool' ); ?></label>
+					</th>
+					<td>
+						<input name="rdt_hidden_field_material" type="text" id="rdt_hidden_field_material" value="<?php echo esc_attr( $current_hidden_field_material ); ?>" class="regular-text">
+						<p class="description"><?php esc_html_e( 'Enter the hidden field name that will be used for the roof material value (this must match your Fluent Forms hidden field).', 'roofing-design-tool' ); ?></p>
 					</td>
 				</tr>
 			</table>
