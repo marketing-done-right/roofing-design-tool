@@ -1,5 +1,5 @@
 === Roofing Design Tool ===
-Contributors: Hans Steffens & MDR
+Contributors: hanscode, marketingdoneright
 Requires at least: 6.7.0
 Tested up to: 6.7.1
 Requires PHP: 8.0
