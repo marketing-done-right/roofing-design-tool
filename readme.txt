@@ -32,3 +32,8 @@ The Roofing Design Tool plugin allows users to design their roofs by selecting a
 ## Add Shortcodes to Your Pages:
 - Create a page and insert [roof_design_tool] to display the interactive design tool.
 - Create another page and insert [roof_design_form] to display the design summary and submission form.
+
+== Changelog ==
+
+= 1.0.0 =
+* Initial release with functional with Fluent Form Plugin.

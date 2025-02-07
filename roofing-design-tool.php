@@ -1,12 +1,27 @@
 <?php
-/**
- * Plugin Name: Roofing Design Tool
- * Description: A tool for roofing contractors that lets users design their roofs by selecting a style and material. The design summary and a contact form (via a shortcode) are then displayed on a separate page.
- * Version: 1.0
- * Author: Hans Steffens
- * Text Domain: roofing-design-tool
- * License: GPL2
- */
+/*
+* Plugin Name: Roofing Design Tool
+* Description: A tool for roofing contractors that lets users design their roofs by selecting a style and material. The design summary and a contact form (via a shortcode) are then displayed on a separate page.
+* Version: 1.0.0
+* Author: Hans Steffens & Marketing Done Right LLC
+* Author URI:  https://marketingdr.co
+* Text Domain: roofing-design-tool
+* License: GPL v2 or later
+* License URI: https://www.gnu.org/licenses/gpl-2.0.html
+*
+* AI Content Optimizer is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+* 
+* AI Content Optimizer is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with AI Content Optimizer.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
  if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -127,7 +142,7 @@ function rdt_display_design_tool() {
 					$style_title   = get_the_title();
 					$thumbnail_url = get_the_post_thumbnail_url( get_the_ID(), 'medium' );
 					?>
-					<div class="rdt-card" data-style="<?php echo esc_attr( $style_title ); ?>">
+					<div class="rdt-card" data-style="<?php echo esc_attr( $style_title ); ?>" data-style-img="<?php echo esc_url( $thumbnail_url ); ?>">
 						<?php if ( $thumbnail_url ) : ?>
 							<img src="<?php echo esc_url( $thumbnail_url ); ?>" alt="<?php echo esc_attr( $style_title ); ?>">
 						<?php endif; ?>
@@ -157,7 +172,7 @@ function rdt_display_design_tool() {
 					$material_title   = get_the_title();
 					$thumbnail_url = get_the_post_thumbnail_url( get_the_ID(), 'medium' );
 					?>
-					<div class="rdt-card" data-material="<?php echo esc_attr( $material_title ); ?>">
+					<div class="rdt-card" data-material="<?php echo esc_attr( $material_title ); ?>" data-material-img="<?php echo esc_url( $thumbnail_url ); ?>">
 						<?php if ( $thumbnail_url ) : ?>
 							<img src="<?php echo esc_url( $thumbnail_url ); ?>" alt="<?php echo esc_attr( $material_title ); ?>">
 						<?php endif; ?>
@@ -175,7 +190,9 @@ function rdt_display_design_tool() {
 
 		<div class="rdt-summary">
 			<p><?php esc_html_e( 'Selected Style:', 'roofing-design-tool' ); ?> <span id="rdt-selected-style"></span></p>
+			<div id="rdt-selected-style-img"></div>
 			<p><?php esc_html_e( 'Selected Material:', 'roofing-design-tool' ); ?> <span id="rdt-selected-material"></span></p>
+			<div id="rdt-selected-material-img"></div>
 			<button type="button" id="rdt-submit-design"><?php esc_html_e( 'Submit Design', 'roofing-design-tool' ); ?></button>
 		</div>
 	</div>

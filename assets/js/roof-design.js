@@ -4,19 +4,31 @@ jQuery(document).ready(function($) {
 
     // When a roof style is selected.
     $('.rdt-select-style').on('click', function() {
-        selectedStyle = $(this).closest('.rdt-card').data('style');
+        var $card = $(this).closest('.rdt-card');
+        selectedStyle = $card.data('style');
+        var styleImage = $card.data('style-img'); // get the image URL
         $('#rdt-selected-style').text(selectedStyle);
+        // Set the image in the summary if available
+        if(styleImage) {
+            $('#rdt-selected-style-img').html('<img src="'+ styleImage +'" alt="'+ selectedStyle +'" />');
+        }
         $('.rdt-styles .rdt-card').removeClass('rdt-selected');
-        $(this).closest('.rdt-card').addClass('rdt-selected');
-    });
+        $card.addClass('rdt-selected');
+    });    
 
     // When a roof material is selected.
     $('.rdt-select-material').on('click', function() {
-        selectedMaterial = $(this).closest('.rdt-card').data('material');
+        var $card = $(this).closest('.rdt-card');
+        selectedMaterial = $card.data('material');
+        var materialImage = $card.data('material-img'); // get the image URL
         $('#rdt-selected-material').text(selectedMaterial);
+        // Set the image in the summary if available
+        if(materialImage) {
+            $('#rdt-selected-material-img').html('<img src="'+ materialImage +'" alt="'+ selectedMaterial +'" />');
+        }
         $('.rdt-materials .rdt-card').removeClass('rdt-selected');
-        $(this).closest('.rdt-card').addClass('rdt-selected');
-    });
+        $card.addClass('rdt-selected');
+    });    
 
     // Redirect on "Submit Design" click.
     $('#rdt-submit-design').on('click', function() {
