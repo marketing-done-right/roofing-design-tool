@@ -58,6 +58,7 @@ The Roofing Design Tool plugin allows users to design their roofs by selecting a
 
 ## File Structure
 
+```
 roofing-design-tool/
 ├── assets
 │   ├── css
@@ -65,6 +66,7 @@ roofing-design-tool/
 │   └── js
 │       └── roof-design.js       # JavaScript for handling selections and redirection
 └── roofing-design-tool.php      # Main plugin file with custom post types, shortcodes, and settings page
+```
 
 
 ## Development
