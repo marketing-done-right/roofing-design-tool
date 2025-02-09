@@ -2,144 +2,155 @@
 /* roofing-design.css        */
 /* ------------------------- */
 
+:root {
+    --bde-grid-items-per-row: 3;
+}
+
 /* Container for the two columns */
 .roofing-design-container {
     display: flex;
+    flex-direction: column-reverse;
     gap: 20px;
-    max-width: 1200px;
+    max-width: 100%;
     margin: 20px auto;
     padding: 0 10px;
-  }
-  
-  /* Summary Column (Sticky) - reduced width to 30% */
-  .roofing-design-summary {
-    width: 30%;
-    position: -webkit-sticky;
+}
+
+/* Summary Column (Sticky) - reduced width to 30% */
+.roofing-design-summary {
+    width: 100%;
     position: sticky;
     top: 20px;
     background-color: #fff;
     padding: 20px;
     border: 1px solid #ddd;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     height: fit-content;
-  }
-  
-  /* Options Column - occupies 70% */
-  .roofing-design-options {
-    width: 70%;
-  }
-  
-  /* Accordion styling using details/summary */
-  .roofing-design-options details {
+}
+
+/* Options Column - occupies 70% */
+.roofing-design-options {
+    width: 100%;
+}
+
+/* Accordion styling using details/summary */
+.roofing-design-options details {
     border: 1px solid #ddd;
     border-radius: 4px;
     margin-bottom: 20px;
     overflow: hidden;
-  }
-  
-  .roofing-design-options summary {
+}
+
+.roofing-design-options summary {
     background-color: #0073aa;
     color: #fff;
     padding: 10px 15px;
     cursor: pointer;
     font-size: 1.1em;
     outline: none;
-  }
-  
-  .roofing-design-options details[open] summary {
+}
+
+.roofing-design-options details[open] summary {
     background-color: #005177;
-  }
-  
-  /* Content inside accordion */
-  .accordion-content {
+}
+
+/* Content inside accordion */
+.accordion-content {
     padding: 15px;
     background-color: #f9f9f9;
-  }
-  
-  /* Grid layout for cards (3 columns) */
-  .rdt-styles-grid,
-  .rdt-materials-grid {
+}
+
+/* Grid layout for cards (3 columns) */
+.rdt-styles-grid,
+.rdt-materials-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(var(--bde-grid-items-per-row, 4), minmax(0, 1fr));
     gap: 20px;
-  }
-  
-  /* Card styling */
-  .rdt-card {
+}
+
+/* Card styling */
+.rdt-card {
     border: 1px solid #ccc;
     padding: 10px;
     text-align: center;
     transition: transform 0.3s;
     cursor: pointer;
-  }
-  
-  .rdt-card:hover {
+}
+
+.rdt-card:hover {
     transform: scale(1.02);
-  }
-  
-  .rdt-card img {
+}
+
+.rdt-card img {
     max-width: 100%;
     height: auto;
     display: block;
     margin: 0 auto 10px;
-  }
-  
-  /* Modal dialog styling */
-  .rdt-modal {
+}
+
+/* Modal dialog styling */
+.rdt-modal {
     border: none;
     border-radius: 4px;
     padding: 0;
     max-width: 600px;
     width: 90%;
     background: #fff;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     animation: fadeIn 0.3s ease;
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  
-  /* Modal content layout */
-  .rdt-modal-content {
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Modal content layout */
+.rdt-modal-content {
     display: flex;
     flex-wrap: wrap;
     padding: 20px;
-  }
-  
-  .rdt-modal-left {
+}
+
+.rdt-modal-left {
     flex: 1 1 40%;
     padding-right: 20px;
-  }
-  
-  .rdt-modal-right {
+}
+
+.rdt-modal-right {
     flex: 1 1 60%;
-  }
-  
-  .rdt-modal-right h3 {
+}
+
+.rdt-modal-right h3 {
     margin-top: 0;
-  }
-  
-  .rdt-modal-description {
+}
+
+.rdt-modal-description {
     margin: 15px 0;
-  }
-  
-  .rdt-modal-choose {
+}
+
+.rdt-modal-choose {
     background: #0073aa;
     color: #fff;
     border: none;
     padding: 10px 20px;
     cursor: pointer;
     transition: background 0.3s;
-  }
-  
-  .rdt-modal-choose:hover {
+}
+
+.rdt-modal-choose:hover {
     background: #005177;
-  }
-  
-  /* Modal close button */
-  .rdt-modal-close {
+}
+
+/* Modal close button */
+.rdt-modal-close {
     position: absolute;
     top: 5px;
     right: 10px;
@@ -148,37 +159,49 @@
     font-size: 2em;
     color: #333;
     cursor: pointer;
-  }
-  
-  /* Submit button in summary */
-  .rdt-submit-wrapper {
+}
+
+/* Submit button in summary */
+.rdt-submit-wrapper {
     text-align: center;
     margin-top: 20px;
-  }
-  
-  #rdt-submit-design {
+}
+
+#rdt-submit-design {
     padding: 10px 20px;
     background: #0073aa;
     color: #fff;
     border: none;
     cursor: pointer;
     font-size: 1.1em;
-  }
-  
-  #rdt-submit-design:hover {
-    background: #005177;
-  }
-  
-  /* Summary image styling */
-  .rdt-summary-image {
-    margin-bottom: 10px;
-  }
+}
 
-  .rdt-selected {
+#rdt-submit-design:hover {
+    background: #005177;
+}
+
+/* Summary image styling */
+.rdt-summary-image {
+    margin-bottom: 10px;
+}
+
+.rdt-selected {
     border-color: #0073aa;
     background-color: #e0f7ff;
-  }
+}
 
-  .rdt-modal-close:focus {
+.rdt-modal-close:focus {
     outline: none;
-  }
+}
+
+@media (max-width: 1023px) {
+    :root {
+        --bde-grid-items-per-row: 2;
+    }
+}
+
+@media (max-width: 767px) {
+    :root {
+        --bde-grid-items-per-row: 1;
+    }
+}

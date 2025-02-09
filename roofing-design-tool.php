@@ -124,17 +124,19 @@ add_action( 'wp_enqueue_scripts', 'rdt_enqueue_assets' );
 /* ==========================================================================
    3. Shortcode: [roof_design_tool] – Displays the Interactive Design Tool
    ========================================================================== */
-function rdt_display_design_tool() {
+   function rdt_display_design_tool() {
     ob_start();
     ?>
     <div class="roofing-design-container">
         <!-- Summary Column (Sticky) -->
         <div class="roofing-design-summary">
             <h2><?php esc_html_e( 'Your Selection', 'roofing-design-tool' ); ?></h2>
-            <p><?php esc_html_e( 'Roof Style:', 'roofing-design-tool' ); ?> <span id="rdt-selected-style">None</span></p>
+            <p><?php esc_html_e( 'Roof Style:', 'roofing-design-tool' ); ?></p>
             <div id="rdt-selected-style-img"></div>
-            <p><?php esc_html_e( 'Roof Material:', 'roofing-design-tool' ); ?> <span id="rdt-selected-material">None</span></p>
+			<div><span id="rdt-selected-style">None</span></div>
+            <p><?php esc_html_e( 'Roof Material:', 'roofing-design-tool' ); ?></p>
             <div id="rdt-selected-material-img"></div>
+			<div><span id="rdt-selected-material">None</span></div>
             <div class="rdt-submit-wrapper">
                 <button type="button" id="rdt-submit-design"><?php esc_html_e( 'Submit Design', 'roofing-design-tool' ); ?></button>
             </div>
@@ -143,8 +145,8 @@ function rdt_display_design_tool() {
         <!-- Options Column -->
         <div class="roofing-design-options">
             <!-- Accordion for Roof Styles -->
-            <details open>
-                <summary><?php esc_html_e( 'Step 1: Select Roof Style', 'roofing-design-tool' ); ?></summary>
+            <details open id="accordion-style">
+                <summary id="accordion-style-summary"><?php esc_html_e( 'Step 1: Select Roof Style', 'roofing-design-tool' ); ?></summary>
                 <div class="accordion-content">
                     <div class="rdt-styles-grid">
                         <?php
@@ -160,34 +162,18 @@ function rdt_display_design_tool() {
                                 $style_title   = get_the_title();
                                 $thumbnail_url = get_the_post_thumbnail_url( $style_id, 'medium' );
                         ?>
-                        <!-- Card: Clicking the card updates the selection (via external JS) and opens its modal -->
+                        <!-- Card: clicking the card updates the selection (external JS) and opens its modal -->
                         <div class="rdt-card rdt-select-style" 
                              data-style-id="<?php echo esc_attr( $style_id ); ?>" 
                              data-style="<?php echo esc_attr( $style_title ); ?>" 
                              data-style-img="<?php echo esc_url( $thumbnail_url ); ?>"
-                             onclick="document.getElementById('modal-style-<?php echo $style_id; ?>').showModal();">
+                             data-modal-id="modal-style-<?php echo $style_id; ?>"
+                             onclick="openStyleCard(this);">
                             <?php if ( $thumbnail_url ) : ?>
                                 <img src="<?php echo esc_url( $thumbnail_url ); ?>" alt="<?php echo esc_attr( $style_title ); ?>">
                             <?php endif; ?>
                             <p><?php echo esc_html( $style_title ); ?></p>
                         </div>
-                        <!-- Modal for Roof Style (no Choose button here) -->
-                        <dialog id="modal-style-<?php echo $style_id; ?>" class="rdt-modal">
-                            <div class="rdt-modal-content">
-                                <div class="rdt-modal-left">
-                                    <?php if ( $thumbnail_url ) : ?>
-                                        <img src="<?php echo esc_url( $thumbnail_url ); ?>" alt="<?php echo esc_attr( $style_title ); ?>">
-                                    <?php endif; ?>
-                                </div>
-                                <div class="rdt-modal-right">
-                                    <h3><?php echo esc_html( $style_title ); ?></h3>
-                                    <div class="rdt-modal-description">
-                                        <?php the_content(); ?>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="rdt-modal-close" onclick="this.closest('dialog').close();" aria-label="Close">&times;</button>
-                        </dialog>
                         <?php
                             endwhile;
                             wp_reset_postdata();
@@ -200,8 +186,8 @@ function rdt_display_design_tool() {
             </details>
 
             <!-- Accordion for Roof Materials -->
-            <details>
-                <summary><?php esc_html_e( 'Step 2: Select Roof Material', 'roofing-design-tool' ); ?></summary>
+            <details id="accordion-material">
+                <summary id="accordion-material-summary"><?php esc_html_e( 'Step 2: Select Roof Material', 'roofing-design-tool' ); ?></summary>
                 <div class="accordion-content">
                     <div class="rdt-materials-grid">
                         <?php
@@ -221,29 +207,13 @@ function rdt_display_design_tool() {
                              data-material-id="<?php echo esc_attr( $material_id ); ?>" 
                              data-material="<?php echo esc_attr( $material_title ); ?>" 
                              data-material-img="<?php echo esc_url( $thumbnail_url ); ?>"
-                             onclick="document.getElementById('modal-material-<?php echo $material_id; ?>').showModal();">
+                             data-modal-id="modal-material-<?php echo $material_id; ?>"
+                             onclick="openMaterialCard(this);">
                             <?php if ( $thumbnail_url ) : ?>
                                 <img src="<?php echo esc_url( $thumbnail_url ); ?>" alt="<?php echo esc_attr( $material_title ); ?>">
                             <?php endif; ?>
                             <p><?php echo esc_html( $material_title ); ?></p>
                         </div>
-                        <!-- Modal for Roof Material (no Choose button here) -->
-                        <dialog id="modal-material-<?php echo $material_id; ?>" class="rdt-modal">
-                            <div class="rdt-modal-content">
-                                <div class="rdt-modal-left">
-                                    <?php if ( $thumbnail_url ) : ?>
-                                        <img src="<?php echo esc_url( $thumbnail_url ); ?>" alt="<?php echo esc_attr( $material_title ); ?>">
-                                    <?php endif; ?>
-                                </div>
-                                <div class="rdt-modal-right">
-                                    <h3><?php echo esc_html( $material_title ); ?></h3>
-                                    <div class="rdt-modal-description">
-                                        <?php the_content(); ?>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="rdt-modal-close" onclick="this.closest('dialog').close();" aria-label="Close">&times;</button>
-                        </dialog>
                         <?php
                             endwhile;
                             wp_reset_postdata();
@@ -256,15 +226,118 @@ function rdt_display_design_tool() {
             </details>
         </div>
     </div>
+
+    <!-- Modal Dialogs for Roof Styles -->
+    <div id="rdt-style-modals">
+      <?php
+      // Output modals for roof styles here.
+      $args = array(
+          'post_type'      => 'roofing_style',
+          'posts_per_page' => -1,
+          'post_status'    => 'publish',
+      );
+      $styles = new WP_Query( $args );
+      if ( $styles->have_posts() ) :
+          while ( $styles->have_posts() ) : $styles->the_post();
+              $style_id = get_the_ID();
+              $style_title = get_the_title();
+              $thumbnail_url = get_the_post_thumbnail_url( $style_id, 'medium' );
+      ?>
+      <dialog id="modal-style-<?php echo $style_id; ?>" class="rdt-modal">
+          <div class="rdt-modal-content">
+              <div class="rdt-modal-left">
+                  <?php if ( $thumbnail_url ) : ?>
+                      <img src="<?php echo esc_url( $thumbnail_url ); ?>" alt="<?php echo esc_attr( $style_title ); ?>">
+                  <?php endif; ?>
+              </div>
+              <div class="rdt-modal-right">
+                  <h3><?php echo esc_html( $style_title ); ?></h3>
+                  <div class="rdt-modal-description">
+                      <?php the_content(); ?>
+                  </div>
+              </div>
+          </div>
+          <button class="rdt-modal-close" onclick="this.closest('dialog').close();" aria-label="Close">&times;</button>
+      </dialog>
+      <?php
+          endwhile;
+          wp_reset_postdata();
+      endif;
+      ?>
+    </div>
+
+    <!-- Modal Dialogs for Roof Materials -->
+    <div id="rdt-material-modals">
+      <?php
+      $args = array(
+          'post_type'      => 'roofing_material',
+          'posts_per_page' => -1,
+          'post_status'    => 'publish',
+      );
+      $materials = new WP_Query( $args );
+      if ( $materials->have_posts() ) :
+          while ( $materials->have_posts() ) : $materials->the_post();
+              $material_id = get_the_ID();
+              $material_title = get_the_title();
+              $thumbnail_url = get_the_post_thumbnail_url( $material_id, 'medium' );
+      ?>
+      <dialog id="modal-material-<?php echo $material_id; ?>" class="rdt-modal">
+          <div class="rdt-modal-content">
+              <div class="rdt-modal-left">
+                  <?php if ( $thumbnail_url ) : ?>
+                      <img src="<?php echo esc_url( $thumbnail_url ); ?>" alt="<?php echo esc_attr( $material_title ); ?>">
+                  <?php endif; ?>
+              </div>
+              <div class="rdt-modal-right">
+                  <h3><?php echo esc_html( $material_title ); ?></h3>
+                  <div class="rdt-modal-description">
+                      <?php the_content(); ?>
+                  </div>
+              </div>
+          </div>
+          <button class="rdt-modal-close" onclick="this.closest('dialog').close();" aria-label="Close">&times;</button>
+      </dialog>
+      <?php
+          endwhile;
+          wp_reset_postdata();
+      endif;
+      ?>
+    </div>
+
     <script>
-        // Note: Your external JavaScript (roof-design.js) is expected to update the selection summary and highlight the selected card
-        // when a card with class "rdt-select-style" or "rdt-select-material" is clicked.
-        // In this simplified approach, the card click both updates the summary (via external JS) and opens the modal.
+      // The external JS already handles updating the summary and highlighting.
+      // We add the following inline functions for accordion behavior.
+      function openStyleCard(card) {
+          // Open the corresponding modal.
+          const modalId = card.getAttribute('data-modal-id');
+          document.getElementById(modalId).showModal();
+          // After a short delay, update the accordion:
+          setTimeout(function() {
+              // Update Step 1 summary text with the selected style title.
+              const styleTitle = card.getAttribute('data-style');
+              document.getElementById('accordion-style-summary').textContent = styleTitle;
+              // Close the Step 1 accordion.
+              document.getElementById('accordion-style').removeAttribute('open');
+              // Open the Step 2 accordion.
+              document.getElementById('accordion-material').setAttribute('open', 'open');
+          }, 100);
+      }
+	   // NEW: Function for Step 2 (roof material)
+	   function openMaterialCard(card) {
+			const modalId = card.getAttribute('data-modal-id');
+			document.getElementById(modalId).showModal();
+			setTimeout(function(){
+				const materialTitle = card.getAttribute('data-material');
+				document.getElementById('accordion-material-summary').textContent = materialTitle;
+				// Close the Step 2 accordion.
+				document.getElementById('accordion-material').removeAttribute('open');
+			}, 100);
+		}
     </script>
     <?php
     return ob_get_clean();
 }
-add_shortcode( 'roof_design_tool', 'rdt_display_design_tool' );
+add_shortcode('roof_design_tool', 'rdt_display_design_tool');
 
 /* ==========================================================================
    4. Shortcode: [roof_design_form] – Displays the Design Summary and the Contact Form
