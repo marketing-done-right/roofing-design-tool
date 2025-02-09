@@ -227,6 +227,45 @@
     outline: none;
 }
 
+/* Mt custom Design Summary Form Page*/
+.rdt-form-container {
+    max-width: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 2rem;
+}
+
+.rdt-form-container .roofing-design-summary,
+.rdt-form-container .rdt-contact-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 50%;
+}
+
+.rdt-form-container .roofing-design-summary_columns {
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+
+.rdt-form-container .rdt-style-column,
+.rdt-form-container .rdt-material-column,
+.rdt-form-container .rdt-summary-column {
+    width: 100%;
+    align-items: center;
+    text-align: center;
+}
+
+/* set .rdt-my-summary as grid 2 columns and 1 columns mobile */
+.rdt-my-summary {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+/* Responsive Styling */
 @media (max-width: 1023px) {
     :root {
         --bde-grid-items-per-row: 2;
@@ -248,11 +287,25 @@
         width: 100%;
     }
 
+    .rdt-form-container {
+        flex-direction: column;
+        flex-wrap: nowrap;
+    }
+
+    .rdt-form-container .roofing-design-summary,
+    .rdt-form-container .rdt-contact-form {
+        width: 100%;
+    }
+
 
 }
 
 @media (max-width: 767px) {
     :root {
         --bde-grid-items-per-row: 1;
+    }
+
+    .rdt-my-summary {
+        grid-template-columns: repeat(1, 1fr);
     }
 }

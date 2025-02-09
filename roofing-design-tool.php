@@ -131,7 +131,7 @@ function rdt_display_design_tool()
 	ob_start();
 ?>
 	<div class="roofing-design-container">
-		<!-- Summary Column (Sticky) -->
+		<!-- Summary Column -->
 		<div class="roofing-design-summary">
 			<div class="roofing-design-summary_columns">
 				<div class="rdt-style-column">
@@ -296,22 +296,38 @@ function rdt_display_design_form()
 
 ?>
 	<div class="rdt-form-container">
-		<h2><?php esc_html_e('Your Roof Design Summary', 'roofing-design-tool'); ?></h2>
-
-		<div class="rdt-design-summary">
-			<?php if ($selected_style_img) : ?>
-				<div class="rdt-summary-image rdt-summary-style">
-					<img src="<?php echo esc_url($selected_style_img); ?>" alt="<?php echo esc_attr($selected_style); ?>">
+		<!-- Start of Roofing Design Summary -->
+		<div class="roofing-design-summary">
+			<div class="roofing-design-summary_columns">
+				<div class="rdt-summary-column">
+					<h2><?php esc_html_e('Your Roof Design Summary', 'roofing-design-tool'); ?></h2>
+					<div class="rdt-sumary-desc">
+						<?php esc_html_e("Now that you've explored the various roof styles and materials, it’s time to bring your vision to life! Our custom roof design tool lets you combine and visualize your chosen styles and materials. Create a unique roof design that reflects your taste and enhances your home.", 'roofing-design-tool'); ?>
+					</div>
 				</div>
-			<?php endif; ?>
-			<p><?php esc_html_e('Roof Style:', 'roofing-design-tool'); ?> <strong><?php echo esc_html($selected_style); ?></strong></p>
-			<?php if ($selected_material_img) : ?>
-				<div class="rdt-summary-image rdt-summary-material">
-					<img src="<?php echo esc_url($selected_material_img); ?>" alt="<?php echo esc_attr($selected_material); ?>">
+				<div class="rdt-my-summary">
+					<div class="rdt-style-column">
+						<p><?php esc_html_e('Roof Style:', 'roofing-design-tool'); ?></p>
+						<?php if ($selected_style_img) : ?>
+							<div id="rdt-selected-style-img">
+								<img src="<?php echo esc_url($selected_style_img); ?>" alt="<?php echo esc_attr($selected_style); ?>">
+							</div>
+						<?php endif; ?>
+						<div class="rdt-roof-title"><span id="rdt-selected-style"><?php echo esc_html($selected_style); ?></span></div>
+					</div>
+					<div class="rdt-material-column">
+						<p><?php esc_html_e('Roof Material:', 'roofing-design-tool'); ?></p>
+						<?php if ($selected_material_img) : ?>
+							<div id="rdt-selected-material-img">
+								<img src="<?php echo esc_url($selected_material_img); ?>" alt="<?php echo esc_attr($selected_material); ?>">
+							</div>
+						<?php endif; ?>
+						<div class="rdt-roof-title"><span id="rdt-selected-material"><?php echo esc_html($selected_material); ?></span></div>
+					</div>
 				</div>
-			<?php endif; ?>
-			<p><?php esc_html_e('Roof Material:', 'roofing-design-tool'); ?> <strong><?php echo esc_html($selected_material); ?></strong></p>
+			</div>
 		</div>
+		<!-- End of Roofing Design Summary -->
 
 		<div class="rdt-contact-form">
 			<?php
