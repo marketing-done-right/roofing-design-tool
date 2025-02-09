@@ -16,6 +16,8 @@ jQuery(document).ready(function($) {
         // Update the selector to match your new HTML container
         $('.rdt-styles-grid .rdt-card').removeClass('rdt-selected');
         $card.addClass('rdt-selected');
+        // Remove the hidden class from the summary container if it's hidden.
+        $('.roofing-design-summary').removeClass('hidden');
     });
 
     // When a roof material is selected.
@@ -32,6 +34,8 @@ jQuery(document).ready(function($) {
         // Update the selector to match your new HTML container
         $('.rdt-materials-grid .rdt-card').removeClass('rdt-selected');
         $card.addClass('rdt-selected');
+        // Remove the hidden class from the summary container if it's hidden.
+        $('.roofing-design-summary').removeClass('hidden');
     });
 
     // Redirect on "Submit Design" click.

@@ -6,6 +6,10 @@
     --bde-grid-items-per-row: 3;
 }
 
+.hidden {
+    display: none;
+}
+
 /* Container for the two columns */
 .roofing-design-container {
     display: flex;

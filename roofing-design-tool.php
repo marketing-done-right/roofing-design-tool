@@ -132,7 +132,7 @@ function rdt_display_design_tool()
 ?>
 	<div class="roofing-design-container">
 		<!-- Summary Column -->
-		<div class="roofing-design-summary">
+		<div class="roofing-design-summary hidden">
 			<div class="roofing-design-summary_columns">
 				<div class="rdt-style-column">
 					<p><?php esc_html_e('Roof Style:', 'roofing-design-tool'); ?></p>
@@ -254,7 +254,7 @@ function rdt_display_design_tool()
 			setTimeout(function() {
 				// Update Step 1 summary text with the selected style title.
 				const styleTitle = card.getAttribute('data-style');
-				document.getElementById('accordion-style-summary').textContent = styleTitle;
+				document.getElementById('accordion-style-summary').textContent = styleTitle + " ✔";
 				// Close the Step 1 accordion.
 				document.getElementById('accordion-style').removeAttribute('open');
 				// Open the Step 2 accordion.
@@ -265,7 +265,7 @@ function rdt_display_design_tool()
 		function openMaterialCard(card) {
 			setTimeout(function() {
 				const materialTitle = card.getAttribute('data-material');
-				document.getElementById('accordion-material-summary').textContent = materialTitle;
+				document.getElementById('accordion-material-summary').textContent = materialTitle + " ✔";
 				// Close the Step 2 accordion.
 				document.getElementById('accordion-material').removeAttribute('open');
 			}, 100);
@@ -279,119 +279,124 @@ add_shortcode('roof_design_tool', 'rdt_display_design_tool');
 /* ==========================================================================
    4. Shortcode: [roof_design_form] – Displays the Design Summary and the Contact Form
    ========================================================================== */
-function rdt_display_design_form()
-{
-	ob_start();
+   function rdt_display_design_form() {
+    ob_start();
 
-	// Get and sanitize URL parameters using the keys defined in settings.
-	$style_id = isset($_GET['style_id']) ? absint($_GET['style_id']) : 0;
-	$material_id = isset($_GET['material_id']) ? absint($_GET['material_id']) : 0;
+    // Retrieve the URL parameters.
+    $style_id = isset($_GET['style_id']) ? absint($_GET['style_id']) : 0;
+    $material_id = isset($_GET['material_id']) ? absint($_GET['material_id']) : 0;
 
-	// Get the selected style and material titles.
-	$selected_style = $style_id ? get_the_title($style_id) : '';
-	$selected_material = $material_id ? get_the_title($material_id) : '';
+    // If neither a style nor a material is selected, display a friendly message.
+    if ( ! $style_id && ! $material_id ) {
+        echo '<div class="rdt-no-design-message">';
+        echo '<p>' . esc_html__( 'No design has been selected yet. Please go back and select a roof style and material to create your custom roof design.', 'roofing-design-tool' ) . '</p>';
+        echo '</div>';
+        return ob_get_clean();
+    }
 
-	$selected_style_img = $style_id ? get_the_post_thumbnail_url($style_id, 'medium') : '';
-	$selected_material_img = $material_id ? get_the_post_thumbnail_url($material_id, 'medium') : '';
+    // Get the selected style and material titles.
+    $selected_style = $style_id ? get_the_title( $style_id ) : '';
+    $selected_material = $material_id ? get_the_title( $material_id ) : '';
 
-?>
-	<div class="rdt-form-container">
-		<!-- Start of Roofing Design Summary -->
-		<div class="roofing-design-summary">
-			<div class="roofing-design-summary_columns">
-				<div class="rdt-summary-column">
-					<h2><?php esc_html_e('Your Roof Design Summary', 'roofing-design-tool'); ?></h2>
-					<div class="rdt-sumary-desc">
-						<?php esc_html_e("Now that you've explored the various roof styles and materials, it’s time to bring your vision to life! Our custom roof design tool lets you combine and visualize your chosen styles and materials. Create a unique roof design that reflects your taste and enhances your home.", 'roofing-design-tool'); ?>
-					</div>
-				</div>
-				<div class="rdt-my-summary">
-					<div class="rdt-style-column">
-						<p><?php esc_html_e('Roof Style:', 'roofing-design-tool'); ?></p>
-						<?php if ($selected_style_img) : ?>
-							<div id="rdt-selected-style-img">
-								<img src="<?php echo esc_url($selected_style_img); ?>" alt="<?php echo esc_attr($selected_style); ?>">
-							</div>
-						<?php endif; ?>
-						<div class="rdt-roof-title"><span id="rdt-selected-style"><?php echo esc_html($selected_style); ?></span></div>
-					</div>
-					<div class="rdt-material-column">
-						<p><?php esc_html_e('Roof Material:', 'roofing-design-tool'); ?></p>
-						<?php if ($selected_material_img) : ?>
-							<div id="rdt-selected-material-img">
-								<img src="<?php echo esc_url($selected_material_img); ?>" alt="<?php echo esc_attr($selected_material); ?>">
-							</div>
-						<?php endif; ?>
-						<div class="rdt-roof-title"><span id="rdt-selected-material"><?php echo esc_html($selected_material); ?></span></div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- End of Roofing Design Summary -->
+    // Get the images (if available).
+    $selected_style_img = $style_id ? get_the_post_thumbnail_url( $style_id, 'medium' ) : '';
+    $selected_material_img = $material_id ? get_the_post_thumbnail_url( $material_id, 'medium' ) : '';
+    ?>
+    <div class="rdt-form-container">
+        <!-- Roofing Design Summary -->
+        <div class="roofing-design-summary">
+            <div class="roofing-design-summary_columns">
+                <div class="rdt-summary-column">
+                    <h2><?php esc_html_e( 'Your Roof Design Summary', 'roofing-design-tool' ); ?></h2>
+                    <div class="rdt-sumary-desc">
+                        <?php esc_html_e("Now that you've explored the various roof styles and materials, it’s time to bring your vision to life! Our custom roof design tool lets you combine and visualize your chosen styles and materials. Create a unique roof design that reflects your taste and enhances your home.", 'roofing-design-tool'); ?>
+                    </div>
+                </div>
+                <div class="rdt-my-summary">
+                    <div class="rdt-style-column">
+                        <p><?php esc_html_e('Roof Style:', 'roofing-design-tool'); ?></p>
+                        <?php if ($selected_style_img) : ?>
+                            <div id="rdt-selected-style-img">
+                                <img src="<?php echo esc_url($selected_style_img); ?>" alt="<?php echo esc_attr($selected_style); ?>">
+                            </div>
+                        <?php endif; ?>
+                        <div class="rdt-roof-title">
+                            <span id="rdt-selected-style"><?php echo esc_html($selected_style); ?></span>
+                        </div>
+                    </div>
+                    <div class="rdt-material-column">
+                        <p><?php esc_html_e('Roof Material:', 'roofing-design-tool'); ?></p>
+                        <?php if ($selected_material_img) : ?>
+                            <div id="rdt-selected-material-img">
+                                <img src="<?php echo esc_url($selected_material_img); ?>" alt="<?php echo esc_attr($selected_material); ?>">
+                            </div>
+                        <?php endif; ?>
+                        <div class="rdt-roof-title">
+                            <span id="rdt-selected-material"><?php echo esc_html($selected_material); ?></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-		<div class="rdt-contact-form">
-			<?php
-			// Get the form shortcode from the plugin settings.
-			$form_shortcode = get_option('rdt_form_shortcode', '');
-			if (! empty($form_shortcode)) {
-				echo do_shortcode($form_shortcode);
-			} else {
-				echo '<p>' . esc_html__('No form shortcode has been set in the plugin settings.', 'roofing-design-tool') . '</p>';
-			}
-			?>
-		</div>
-		<script>
-			document.addEventListener('DOMContentLoaded', function() {
-				const params = new URLSearchParams(window.location.search);
+        <!-- Contact Form Section -->
+        <div class="rdt-contact-form">
+            <?php
+            // Get the form shortcode from the plugin settings.
+            $form_shortcode = get_option( 'rdt_form_shortcode', '' );
+            if ( ! empty( $form_shortcode ) ) {
+                echo do_shortcode( $form_shortcode );
+            } else {
+                echo '<p>' . esc_html__( 'No form shortcode has been set in the plugin settings.', 'roofing-design-tool' ) . '</p>';
+            }
+            ?>
+        </div>
+        <script>
+            // This script attempts to update hidden form fields using REST API,
+            // but you may already be handling this elsewhere.
+            document.addEventListener('DOMContentLoaded', function() {
+                const params = new URLSearchParams(window.location.search);
 
-				// Process roof style using the passed style_id
-				if (params.has('style_id')) {
-					const styleID = params.get('style_id');
-					// Use the REST API endpoint for the roofing_style post type
-					fetch('/wp-json/wp/v2/roofing_style/' + styleID)
-						.then(function(response) {
-							return response.json();
-						})
-						.then(function(data) {
-							const styleTitle = data.title && data.title.rendered ? data.title.rendered : '';
-							// Get the hidden input name from plugin settings
-							const styleFieldName = <?php echo json_encode(get_option('rdt_hidden_field_style', 'roof_style')); ?>;
-							const styleField = document.querySelector('input[name="' + styleFieldName + '"]');
-							if (styleField) {
-								styleField.value = styleTitle;
-							}
-						})
-						.catch(function(error) {
-							console.error('Error fetching roof style data:', error);
-						});
-				}
+                // Process roof style using the passed style_id
+                if (params.has('style_id')) {
+                    const styleID = params.get('style_id');
+                    fetch('/wp-json/wp/v2/roofing_style/' + styleID)
+                        .then(response => response.json())
+                        .then(data => {
+                            const styleTitle = data.title && data.title.rendered ? data.title.rendered : '';
+                            const styleFieldName = <?php echo json_encode(get_option('rdt_hidden_field_style', 'roof_style')); ?>;
+                            const styleField = document.querySelector('input[name="' + styleFieldName + '"]');
+                            if (styleField) {
+                                styleField.value = styleTitle;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching roof style data:', error);
+                        });
+                }
 
-				// Process roof material using the passed material_id
-				if (params.has('material_id')) {
-					const materialID = params.get('material_id');
-					// Use the REST API endpoint for the roofing_material post type
-					fetch('/wp-json/wp/v2/roofing_material/' + materialID)
-						.then(function(response) {
-							return response.json();
-						})
-						.then(function(data) {
-							const materialTitle = data.title && data.title.rendered ? data.title.rendered : '';
-							const materialFieldName = <?php echo json_encode(get_option('rdt_hidden_field_material', 'roof_material')); ?>;
-							const materialField = document.querySelector('input[name="' + materialFieldName + '"]');
-							if (materialField) {
-								materialField.value = materialTitle;
-							}
-						})
-						.catch(function(error) {
-							console.error('Error fetching roof material data:', error);
-						});
-				}
-			});
-		</script>
-
-	</div>
+                // Process roof material using the passed material_id
+                if (params.has('material_id')) {
+                    const materialID = params.get('material_id');
+                    fetch('/wp-json/wp/v2/roofing_material/' + materialID)
+                        .then(response => response.json())
+                        .then(data => {
+                            const materialTitle = data.title && data.title.rendered ? data.title.rendered : '';
+                            const materialFieldName = <?php echo json_encode(get_option('rdt_hidden_field_material', 'roof_material')); ?>;
+                            const materialField = document.querySelector('input[name="' + materialFieldName + '"]');
+                            if (materialField) {
+                                materialField.value = materialTitle;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching roof material data:', error);
+                        });
+                }
+            });
+        </script>
+    </div>
 <?php
-	return ob_get_clean();
+    return ob_get_clean();
 }
 add_shortcode('roof_design_form', 'rdt_display_design_form');
 
