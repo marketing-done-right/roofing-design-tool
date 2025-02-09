@@ -13,7 +13,8 @@ jQuery(document).ready(function($) {
         if (styleImage) {
             $('#rdt-selected-style-img').html('<img src="'+ styleImage +'" alt="'+ styleTitle +'" />');
         }
-        $('.rdt-styles .rdt-card').removeClass('rdt-selected');
+        // Update the selector to match your new HTML container
+        $('.rdt-styles-grid .rdt-card').removeClass('rdt-selected');
         $card.addClass('rdt-selected');
     });
 
@@ -28,7 +29,8 @@ jQuery(document).ready(function($) {
         if (materialImage) {
             $('#rdt-selected-material-img').html('<img src="'+ materialImage +'" alt="'+ materialTitle +'" />');
         }
-        $('.rdt-materials .rdt-card').removeClass('rdt-selected');
+        // Update the selector to match your new HTML container
+        $('.rdt-materials-grid .rdt-card').removeClass('rdt-selected');
         $card.addClass('rdt-selected');
     });
 
