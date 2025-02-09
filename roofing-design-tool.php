@@ -248,7 +248,7 @@ function rdt_display_design_tool()
 
 	<script>
 		// The external JS already handles updating the summary and highlighting.
-		// We add the following inline functions for accordion behavior.
+		// The following functions are used to open the next accordion after a card is clicked.
 		function openStyleCard(card) {
 			// After a short delay, update the accordion:
 			setTimeout(function() {
@@ -352,8 +352,7 @@ add_shortcode('roof_design_tool', 'rdt_display_design_tool');
             ?>
         </div>
         <script>
-            // This script attempts to update hidden form fields using REST API,
-            // but you may already be handling this elsewhere.
+            // This script attempts to update hidden form fields using REST API, based on the URL parameters.
             document.addEventListener('DOMContentLoaded', function() {
                 const params = new URLSearchParams(window.location.search);
 
